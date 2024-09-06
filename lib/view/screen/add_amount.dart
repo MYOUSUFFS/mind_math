@@ -1,12 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:mind_math/controller/shared_pref.dart';
 import 'package:mind_math/model/source.dart';
+import 'package:mind_math/view/helper/basic.dart';
 import 'package:mind_math/view/screen/home.dart';
 import 'package:provider/provider.dart';
 
 import '../../controller/main_provider.dart';
 import '../../model/amount_data.dart';
+import '../../model/tag.dart';
 import '../helper/widget/rounded_container.dart';
+import '../helper/widget/toast.dart';
 
 class AddAmountWidget extends StatefulWidget {
   const AddAmountWidget({super.key});
@@ -18,7 +23,8 @@ class AddAmountWidget extends StatefulWidget {
 class _AddAmountWidgetState extends State<AddAmountWidget> {
   String tag = 'Add';
   String selectedAmount = "CR";
-  List<String> tagList = [];
+  List<Tags> tagList = [];
+  Tags? singleTag;
   DateTime date = DateTime.now().toLocal();
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -26,13 +32,13 @@ class _AddAmountWidgetState extends State<AddAmountWidget> {
   final TextEditingController _sourceController = TextEditingController();
   Source? source;
 
-  addTag(String data) {
-    if (tagList.contains(data) || data.isEmpty) return;
+  addTag(Tags data) {
+    if (tagList.contains(data)) return;
     tagList.add(data);
     setState(() {});
   }
 
-  removeTag(String data) {
+  removeTag(Tags data) {
     tagList.remove(data);
     setState(() {});
   }
@@ -48,43 +54,110 @@ class _AddAmountWidgetState extends State<AddAmountWidget> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                TextFormField(
-                  controller: _sourceController,
-                  textCapitalization: TextCapitalization.words,
-                  decoration: InputDecoration(
-                    hintText: 'Tags',
-                    contentPadding: const EdgeInsets.all(5),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                Flexible(
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      Wrap(
+                        children: mainProvider.tag
+                            .map((element) => InkWell(
+                                  onTap: () {
+                                    addTag(element);
+                                    myMsg(
+                                      context,
+                                      title: '${element.name}Tag Added',
+                                      color: Colors.green,
+                                      icon: Icons.done,
+                                    );
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.all(4),
+                                    padding: const EdgeInsets.all(4),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: element.color != null
+                                          ? BasicColors.hexToColor(
+                                              element.color!)
+                                          : Colors.white,
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(element.name),
+                                        const SizedBox(width: 10),
+                                        InkWell(
+                                          onTap: () {
+                                            mainProvider.removeTag(element);
+                                          },
+                                          child: const Icon(Icons.delete,
+                                              color: Colors.red),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ))
+                            .toList(),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Back'),
+                Flexible(
+                  child: TextFormField(
+                    controller: _sourceController,
+                    autofocus: true,
+                    textInputAction: TextInputAction.done,
+                    onSaved: (value) {
+                      onPressed;
+                    },
+                    textCapitalization: TextCapitalization.words,
+                    decoration: InputDecoration(
+                      hintText: 'Tags',
+                      contentPadding: const EdgeInsets.all(5),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
-                    const SizedBox(width: 10),
-                    ElevatedButton(
-                      onPressed: onPressed,
-                      child: const Text('Add Tag'),
-                    ),
-                  ],
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(20),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Flexible(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text('Back'),
+                      ),
+                      const SizedBox(width: 10),
+                      ElevatedButton(
+                        onPressed: onPressed,
+                        child: const Text('Add Tag'),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
         ),
       );
+  late MainProvider mainProvider;
+
+  @override
+  void initState() {
+    mainProvider = Provider.of<MainProvider>(context, listen: false);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final MainProvider mainProvider = Provider.of<MainProvider>(context);
+    mainProvider = Provider.of<MainProvider>(context);
     return Container(
       color: Colors.grey.shade300,
       child: Form(
@@ -105,7 +178,7 @@ class _AddAmountWidgetState extends State<AddAmountWidget> {
                     itemBuilder: (context, index) => Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(tagList[index]),
+                        Text(tagList[index].name),
                         IconButton(
                             onPressed: () => removeTag(tagList[index]),
                             icon: const Icon(Icons.delete))
@@ -154,23 +227,27 @@ class _AddAmountWidgetState extends State<AddAmountWidget> {
                     items: [
                       ...mainProvider.tag
                           .map((e) => DropdownMenuItem(
-                              value: e,
-                              child: Row(
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.delete,
-                                      color: Colors.red,
-                                    ),
-                                    onPressed: () {
-                                      mainProvider.removeTag(e);
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Text(e),
-                                ],
-                              )))
+                                value: e,
+                                child: Text(e.name),
+                                // Row(
+                                //   mainAxisAlignment:
+                                //       MainAxisAlignment.spaceBetween,
+                                //   children: [
+                                //     Text(e.name),
+                                // const SizedBox(width: 10),
+                                // IconButton(
+                                //   icon: const Icon(
+                                //     Icons.delete,
+                                //     color: Colors.red,
+                                //   ),
+                                //   onPressed: () {
+                                //     mainProvider.removeTag(e);
+                                //     Navigator.pop(context);
+                                //   },
+                                // ),
+                                //   ],
+                                // )
+                              ))
                           .toList(),
                       const DropdownMenuItem(
                         value: 'Add',
@@ -185,15 +262,15 @@ class _AddAmountWidgetState extends State<AddAmountWidget> {
                       )
                     ],
                     onChanged: (value) {
-                      if (value != 'Add') {
-                        if (value != null) {
-                          addTag(value);
-                        }
+                      if (value is Tags) {
+                        addTag(value);
                         setState(() {});
                       } else {
                         showDialog2(
                           () {
-                            mainProvider.addTag(_sourceController.text);
+                            mainProvider.addTag(
+                              Tags(name: _sourceController.text),
+                            );
                             _sourceController.clear();
                             Navigator.pop(context);
                           },
@@ -257,7 +334,12 @@ class _AddAmountWidgetState extends State<AddAmountWidget> {
                   const SizedBox(width: 10),
                   IconButton(
                     onPressed: () {
-                      if (formKey.currentState!.validate()) {
+                      if (source == null) {
+                        myMsg(
+                          context,
+                          title: 'Please Select Source',
+                        );
+                      } else if (formKey.currentState!.validate()) {
                         final AmountData amountData = AmountData(
                           date: date,
                           amount: _amountController.text,
@@ -270,6 +352,7 @@ class _AddAmountWidgetState extends State<AddAmountWidget> {
                           tags: [...tagList],
                         );
                         mainProvider.addAmountData(amountData);
+                        SpendingLocalData().spendingSet(context);
                         tagList.clear();
                         _amountController.clear();
                       }

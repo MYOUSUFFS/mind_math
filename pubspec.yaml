@@ -38,6 +38,9 @@ dependencies:
   provider: ^6.1.2
   google_fonts: ^6.1.0
   nb_utils: ^6.1.3
+  hive_flutter: ^1.1.0
+  hive: ^2.2.3
+  myself: ^0.0.6
 
 dev_dependencies:
   flutter_test:
@@ -49,6 +52,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  hive_generator: ^2.0.1
+  build_runner: ^2.4.9
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -76,12 +81,12 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
+  fonts:
+    - family: prime
+      fonts:
+        - asset: assets/fonts/IBM_Plex_Mono/IBMPlexMono-Regular.ttf
+        - asset: assets/fonts/IBM_Plex_Mono/IBMPlexMono-Italic.ttf
+        - asset: assets/fonts/IBM_Plex_Mono/IBMPlexMono-Bold.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

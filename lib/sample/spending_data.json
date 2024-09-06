@@ -1,0 +1,20 @@
+{
+  "data": [
+    {
+      "date": "2016-05-18T16:00:00Z",
+      "reason": "Some what",
+      "amount": 100000.0,
+      "transaction": "DR",
+      "source": { "amount": 10000.0, "name": "Bank" },
+      "tags": ["Needs", "Foods"]
+    },
+    {
+      "date": "2016-06-18T16:00:00Z",
+      "reason": "Some what2",
+      "amount": 1000.0,
+      "transaction": "CR",
+      "source": { "amount": 10000.0, "name": "Bank" },
+      "tags": ["Foods"]
+    }
+  ]
+}

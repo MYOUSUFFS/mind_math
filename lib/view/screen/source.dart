@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mind_math/controller/shared_pref.dart';
 import 'package:mind_math/model/source.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +17,7 @@ class SourceScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Source'),
+        title: const Text('Source (Like bank)'),
       ),
       body: ListView(
         children: [
@@ -59,6 +60,13 @@ class _AddSourceState extends State<AddSource> {
   final TextEditingController openingBalance = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    SpendingLocalData().getString(context);
+    // SpendingLocalData().spendingSet(context);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

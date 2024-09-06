@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class Basic {
   static String? Function(String?)? empty = (value) {
@@ -11,14 +10,15 @@ class Basic {
 }
 
 class BasicText {
-  static TextStyle h1 =
-      GoogleFonts.ibmPlexMono(fontSize: 40, fontWeight: FontWeight.bold);
-  static TextStyle h2 =
-      GoogleFonts.ibmPlexMono(fontSize: 24, fontWeight: FontWeight.bold);
-  static TextStyle h3 =
-      GoogleFonts.ibmPlexMono(fontSize: 18, fontWeight: FontWeight.bold);
-  static TextStyle h4 =
-      GoogleFonts.ibmPlexMono(fontSize: 14, fontWeight: FontWeight.w400);
+  static TextStyle h1 = const TextStyle(
+      fontFamily: 'prime', fontSize: 40, fontWeight: FontWeight.bold);
+  // GoogleFonts.ibmPlexMono(fontSize: 40, fontWeight: FontWeight.bold);
+  static TextStyle h2 = const TextStyle(
+      fontFamily: 'prime', fontSize: 24, fontWeight: FontWeight.bold);
+  static TextStyle h3 = const TextStyle(
+      fontFamily: 'prime', fontSize: 18, fontWeight: FontWeight.bold);
+  static TextStyle h4 = const TextStyle(
+      fontFamily: 'prime', fontSize: 14, fontWeight: FontWeight.bold);
 }
 
 class BasicColors {

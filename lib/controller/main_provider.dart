@@ -3,11 +3,21 @@ import 'package:mind_math/model/source.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../../model/amount_data.dart';
+import '../model/tag.dart';
+
+// Todo - This is a future and many time we need this so i put here.
+SharedPreferences? prefs;
 
 class MainProvider with ChangeNotifier {
   // Todo - This main data sets
   final List<AmountData> _amountData = [];
   List<AmountData> get amountData => _amountData;
+
+  setDataSp(List<AmountData> data) {
+    _amountData.clear();
+    _amountData.addAll(data);
+    notifyListeners();
+  }
 
   void addAmountData(AmountData amountData) {
     source.any((element) {
@@ -35,16 +45,16 @@ class MainProvider with ChangeNotifier {
   }
 
   // Todo - Tags list of tags
-  final List<String> _tag = [];
-  List<String> get tag => _tag;
+  final List<Tags> _tag = [];
+  List<Tags> get tag => _tag;
 
-  void addTag(String data) {
-    if (_tag.contains(data) || data.isEmpty) return;
+  void addTag(Tags data) {
+    if (_tag.contains(data)) return;
     _tag.add(data);
     notifyListeners();
   }
 
-  void removeTag(String tag) {
+  void removeTag(Tags tag) {
     _tag.remove(tag);
     notifyListeners();
   }
@@ -69,4 +79,8 @@ class MainProvider with ChangeNotifier {
     _source.remove(data);
     notifyListeners();
   }
+
+  //! ------------- Local Storage ------------
+  var _pref;
+  get pref => _pref;
 }

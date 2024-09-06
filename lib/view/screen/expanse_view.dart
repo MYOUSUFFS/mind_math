@@ -67,7 +67,9 @@ class ChatWidget extends StatelessWidget {
                           '${snapShot.source?.name}, ${snapShot.source?.amount}')
                     ],
                     Wrap(
-                      children: snapShot.tags!.map((e) => Text('$e ')).toList(),
+                      children: snapShot.tags!
+                          .map((e) => Text('${e?.name} '))
+                          .toList(),
                     )
                   ],
                 )

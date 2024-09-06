@@ -15,13 +15,14 @@ class MyHomePage extends StatelessWidget {
         title: const Text('Mind Math'),
         actions: [
           IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SourceScreen()),
-                );
-              },
-              icon: const Icon(Icons.source))
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SourceScreen()),
+              );
+            },
+            icon: const Icon(Icons.source),
+          )
         ],
       ),
       body: const Column(
