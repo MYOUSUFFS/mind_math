@@ -31,14 +31,16 @@ class AmountData {
     this.tags,
   });
 
-  factory AmountData.fromJson(Map<String, dynamic> json) => AmountData(
-        date: DateTime.tryParse(json["date"]),
-        reason: json["reason"],
-        amount: json["amount"],
-        amountIs: json["amountIs"],
-        source: Source.fromJson(json["source"]),
-        tags: json["tags"] != null
-            ? List<Tags?>.from(json["tags"].map((x) => x))
+  factory AmountData.fromJson(Map<String, dynamic> jsonIs) => AmountData(
+        date: DateTime.tryParse(jsonIs["date"]),
+        reason: jsonIs["reason"],
+        amount: jsonIs["amount"],
+        amountIs: jsonIs["amountIs"],
+        source: Source.fromJson(jsonIs["source"]),
+        tags: jsonIs["tags"] != null
+            ? tagsFromJson(
+                json.encode(jsonIs["tags"]),
+              )
             : null,
       );
 

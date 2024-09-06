@@ -352,7 +352,7 @@ class _AddAmountWidgetState extends State<AddAmountWidget> {
                           tags: [...tagList],
                         );
                         mainProvider.addAmountData(amountData);
-                        SpendingLocalData().spendingSet(context);
+                        LocalData(context: context).spendingSet(Local.spending);
                         tagList.clear();
                         _amountController.clear();
                       }

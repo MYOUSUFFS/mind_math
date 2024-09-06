@@ -3,10 +3,22 @@ import 'package:mind_math/model/amount_data.dart';
 import 'package:provider/provider.dart';
 
 import '../../controller/main_provider.dart';
+import '../../controller/shared_pref.dart';
 import '../helper/single_line_helper.dart';
 
-class ExpanseViewList extends StatelessWidget {
+class ExpanseViewList extends StatefulWidget {
   const ExpanseViewList({super.key});
+
+  @override
+  State<ExpanseViewList> createState() => _ExpanseViewListState();
+}
+
+class _ExpanseViewListState extends State<ExpanseViewList> {
+  @override
+  void initState() {
+    LocalData(context: context).getString(Local.source);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

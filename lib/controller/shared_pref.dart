@@ -16,14 +16,17 @@ void getTiming() {
   return isT;
 }
 
-class SpendingLocalData {
+class LocalData {
+  final BuildContext context;
+  LocalData({required this.context});
+
   Future<SharedPreferences> _prefS() async {
     prefs ??= await SharedPreferences.getInstance();
     getTiming();
     return prefs!;
   }
 
-  spendingSet(BuildContext context) {
+  spendingSet(Local data) {
     final mainProvider = Provider.of<MainProvider>(context, listen: false);
     try {
       if (mainProvider.amountData.isNotEmpty) {
@@ -32,9 +35,12 @@ class SpendingLocalData {
         final json = mainDataToJson(mainProvider.amountData);
         // print(json);
         //! --- data process
-        _prefS().then((value) {
-          value.setString('spending', json);
-        });
+        String? localIS = local(data);
+        if (localIS != null) {
+          _prefS().then((value) {
+            value.setString(localIS, json);
+          });
+        }
         getTiming();
       } else {
         print('empty');
@@ -43,25 +49,38 @@ class SpendingLocalData {
       e;
       print(e);
     }
-    // _prefS().then((value) {
-    //   if (mainProvider.amountData.isNotEmpty) {
-    //     value.setString('spending', json);
-    //   }
-    // });
-    // getTiming();
   }
 
-  getString(BuildContext context) async {
+  getString(Local data) async {
     final mainProvider = Provider.of<MainProvider>(context, listen: false);
-    final String spending = await _prefS().then((value) {
-      return value.getString('spending') ?? '';
-    });
-    print(spending);
-    print(spending.runtimeType);
-    if (spending.isNotEmpty) {
-      mainProvider.setDataSp(mainDataFromJson(spending));
-    } else {
-      print('No Data');
+    String? localIS = local(data);
+    if (localIS != null) {
+      final String spending = await _prefS().then((value) {
+        return value.getString('spending') ?? '';
+      });
+      print(spending);
+      print(spending.runtimeType);
+      if (spending.isNotEmpty) {
+        mainProvider.setDataSp(mainDataFromJson(spending));
+      } else {
+        print('No Data');
+      }
     }
+  }
+}
+
+enum Local { spending, tags, source }
+
+String? local(Local data) {
+  print(data.toString());
+  switch (data) {
+    case Local.source:
+      return 'source';
+    case Local.spending:
+      return 'spending';
+    case Local.tags:
+      return 'tags';
+    default:
+      return null;
   }
 }

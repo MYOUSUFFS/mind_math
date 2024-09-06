@@ -1,3 +1,8 @@
+import 'dart:convert';
+
+List<Tags> tagsFromJson(String str) =>
+    List<Tags>.from(json.decode(str).map((x) => Tags.fromJson(x)));
+
 class Tags {
   String name;
   String? color;
